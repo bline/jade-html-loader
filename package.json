@@ -1,0 +1,25 @@
+{
+  "name": "jade-html-loader",
+  "version": "0.0.1",
+  "author": {
+    "name": "Scott Beck (@bline)"
+  },
+  "description": "jade to html loader module for webpack",
+  "dependencies": {
+    "loader-utils": "0.2.x",
+  },
+  "peerDependencies": {
+    "jade": "^1.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/bline/jade-html-loader.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.opensource.org/licenses/mit-license.php"
+    }
+  ],
+  "readmeFilename": "README.md"
+}
