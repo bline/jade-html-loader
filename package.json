@@ -6,7 +6,7 @@
   },
   "description": "jade to html loader module for webpack",
   "dependencies": {
-    "loader-utils": "0.2.x",
+    "loader-utils": "0.2.x"
   },
   "peerDependencies": {
     "jade": "^1.7.0"
