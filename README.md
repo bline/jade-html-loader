@@ -5,6 +5,7 @@
 ``` javascript
 var html = require("jade-html!./file.jade");
 // => returns file.jade content as html
+```
 
 Allows you to get HTML back instead of a function reference. I found this
 useful for templates which render server side.
