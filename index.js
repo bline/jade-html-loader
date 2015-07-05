@@ -14,6 +14,7 @@ module.exports = function(source) {
 		self: query.self,
 		pretty: query.pretty,
 		locals: query.locals,
+		doctype: query.doctype || 'html',
 		compileDebug: this.debug || false
 	});
 
