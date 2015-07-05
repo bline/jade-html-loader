@@ -10,6 +10,7 @@ module.exports = function(source) {
 	var req = loaderUtils.getRemainingRequest(this).replace(/^!/, "");
 	var tmplFunc = jade.compile(source, {
 		filename: req,
+		doctype: query.doctype,
 		self: query.self,
 		pretty: query.pretty,
 		locals: query.locals,
