@@ -18,8 +18,25 @@ Possible options are (all passed to jade.compile()):
 
 * locals - set locals
 
+The loader query is passed to template function, also all environments variables
+from process.env will be copied into locals and could be used in
+templates `#{MY_ENV_VAR}`.
+
+
+```javascript
+require("jade-html?{author:"Kafka"}!./file.jade");
+```
+
+```jade
+html
+  script src="#{CDN_URL}/react.js"
+  body
+    h3 #{author}
+```
+
 Don't forget to polyfill `require` if you want to use it in node.
 See [enhanced-require](https://github.com/webpack/enhanced-require) documentation.
+
 
 ## License
 

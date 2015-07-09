@@ -17,5 +17,9 @@ module.exports = function(source) {
 		compileDebug: this.debug || false
 	});
 
+               for (var k in process.env){
+                 query[k] = process.env[k]
+               }
+
 	return tmplFunc(query);
 }
