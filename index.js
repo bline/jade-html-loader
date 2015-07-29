@@ -7,13 +7,11 @@ module.exports = function(source) {
 	this.cacheable && this.cacheable(true);
 	var jade = require("jade");
 	var query = loaderUtils.parseQuery(this.query);
-	var req = loaderUtils.getRemainingRequest(this).replace(/^!/, "");
 	var tmplFunc = jade.compile(source, {
-		filename: req,
+		filename: this.resource,
 		self: query.self,
 		pretty: query.pretty,
 		locals: query.locals,
-		doctype: query.doctype || 'html',
 		compileDebug: this.debug || false
 	});
 
