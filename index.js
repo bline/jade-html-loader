@@ -8,12 +8,16 @@ module.exports = function(source) {
 	var jade = require("jade");
 	var query = loaderUtils.parseQuery(this.query);
 	var tmplFunc = jade.compile(source, {
-		filename: this.resource,
+		filename: this.resourcePath,
 		self: query.self,
 		pretty: query.pretty,
 		locals: query.locals,
 		compileDebug: this.debug || false
 	});
+
+	tmplFunc.dependencies.forEach(function(dep) {
+		this.addDependency(dep);
+	}.bind(this));
 
 	return tmplFunc(query);
 }
