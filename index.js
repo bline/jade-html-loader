@@ -12,10 +12,9 @@ module.exports = function(source) {
 		filename: req,
 		self: query.self,
 		pretty: query.pretty,
-		locals: query.locals,
 		doctype: query.doctype || 'html',
 		compileDebug: this.debug || false
 	});
 
-	return tmplFunc(query);
+	return tmplFunc(query.locals);
 }
