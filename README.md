@@ -5,7 +5,7 @@ The loader allows you to get HTML back instead of a function reference. I found 
 ## Installation
 
 ```sh
-npm i jade-html --save-dev
+npm i jade-html-loader --save-dev
 ```
 
 **Note**: npm version 3 won't automatically install [peerDependencies](https://docs.npmjs.com/files/package.json#peerdependencies), so you need to manual install jade:
