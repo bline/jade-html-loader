@@ -8,9 +8,9 @@ var loaderUtils = require("loader-utils");
 module.exports = function(source) {
 	this.cacheable && this.cacheable();
 
-	var jade     = require("jade");
-	var query    = loaderUtils.parseQuery(this.query);
-	var req      = loaderUtils.getRemainingRequest(this).replace(/^!/, "");
+	var jade  = require("jade");
+	var query = loaderUtils.parseQuery(this.query);
+	var req   = loaderUtils.getRemainingRequest(this).replace(/^!/, "");
 
 	var tmplFunc = jade.compile(source, {
 		filename:     req,
