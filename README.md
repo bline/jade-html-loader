@@ -24,8 +24,7 @@ var html = require("jade-html?single!./file.jade");
 If you want to use this loader with [file-loader](https://github.com/webpack/file-loader) then you should remove the `single` option:
 
 ```javascript
-var html = require("file?name=[name].html!jade-html!./file.jade");
-// => returns file.jade content as html
+require("file?name=[name].html!jade-html!./file.jade");
 ```
 
 ## Options
