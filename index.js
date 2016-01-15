@@ -3,6 +3,7 @@
 	Author Scott Beck @bline
 */
 
+var _ = require('lodash')
 var loaderUtils = require("loader-utils");
 var Path = require('path');
 
@@ -12,15 +13,18 @@ module.exports = function(source) {
 	var query = loaderUtils.parseQuery(this.query);
 
 	var dirname = Path.dirname(this.resourcePath);
-
-	var tmpl = jade.compileClientWithDependenciesTracked(source, {
+	var jadeOptions = _.defaults({
 		filename: this.resourcePath,
 		self: query.self,
 		pretty: query.pretty,
-		locals: query,
+	}, getLoaderConfig(this), {
 		compileDebug: true,
 		externalRuntime: false
 	});
+
+	jadeOptions.locals = _.assign(jadeOptions.locals, query);
+
+	var tmpl = jade.compileClientWithDependenciesTracked(source, jadeOptions);
 
 	tmpl.dependencies.forEach(function(dep) {
 		this.addDependency(dep);
@@ -65,4 +69,21 @@ function resolve(path) {
 function toString(key, value) {
 	if (!(value instanceof RegExp)) return value;
 	return value.toString();
+}
+
+/**
+ * Check the loader query and webpack config for loader options. If an option is defined in both places,
+ * the loader query takes precedence.
+ *
+ * @param {Loader} loaderContext
+ * @returns {Object}
+ */
+function getLoaderConfig(loaderContext) {
+	var query = utils.parseQuery(loaderContext.query);
+	var configKey = query.config || 'jadeLoader';
+	var config = loaderContext.options[configKey] || {};
+
+	delete query.config;
+
+	return assign({}, config, query);
 }
