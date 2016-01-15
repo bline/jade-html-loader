@@ -1,7 +1,7 @@
 /*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Scott Beck @bline
-*/
+ MIT License http://www.opensource.org/licenses/mit-license.php
+ Author Scott Beck @bline
+ */
 
 var _ = require('lodash')
 var loaderUtils = require("loader-utils");
@@ -17,7 +17,7 @@ module.exports = function(source) {
 		filename: this.resourcePath,
 		self: query.self,
 		pretty: query.pretty,
-	}, getLoaderConfig(this), {
+	}, getLoaderConfig(this, query), {
 		compileDebug: true,
 		externalRuntime: false
 	});
@@ -78,12 +78,11 @@ function toString(key, value) {
  * @param {Loader} loaderContext
  * @returns {Object}
  */
-function getLoaderConfig(loaderContext) {
-	var query = utils.parseQuery(loaderContext.query);
+function getLoaderConfig(loaderContext, query) {
 	var configKey = query.config || 'jadeLoader';
 	var config = loaderContext.options[configKey] || {};
 
 	delete query.config;
 
-	return assign({}, config, query);
+	return config;
 }
