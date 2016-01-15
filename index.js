@@ -3,7 +3,7 @@
  Author Scott Beck @bline
  */
 
-var _ = require('lodash')
+var _ = require('lodash');
 var loaderUtils = require("loader-utils");
 var Path = require('path');
 
@@ -18,11 +18,10 @@ module.exports = function(source) {
 		self: query.self,
 		pretty: query.pretty,
 	}, getLoaderConfig(this, query), {
-		compileDebug: true,
 		externalRuntime: false
 	});
 
-	jadeOptions.locals = _.assign(jadeOptions.locals, query);
+	var jadeLocals = _.assign(jadeOptions.locals, query);
 
 	var tmpl = jade.compileClientWithDependenciesTracked(source, jadeOptions);
 
@@ -59,7 +58,7 @@ module.exports = function(source) {
 		this.addDependency && this.addDependency(file);
 	}
 
-	return mod(query.locals || query);
+	return mod(jadeLocals);
 }
 
 function resolve(path) {
@@ -76,6 +75,7 @@ function toString(key, value) {
  * the loader query takes precedence.
  *
  * @param {Loader} loaderContext
+ * @param {object} query
  * @returns {Object}
  */
 function getLoaderConfig(loaderContext, query) {
