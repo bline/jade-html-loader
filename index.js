@@ -19,7 +19,8 @@ module.exports = function(source) {
 		pretty: query.pretty,
 		locals: query,
 		compileDebug: true,
-		externalRuntime: false
+		externalRuntime: false,
+		doctype: query.doctype
 	});
 
 	tmpl.dependencies.forEach(function(dep) {
