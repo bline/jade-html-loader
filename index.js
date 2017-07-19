@@ -8,81 +8,57 @@ var loaderUtils = require("loader-utils");
 var Path = require('path');
 
 module.exports = function(source) {
-	this.cacheable && this.cacheable(true);
-	var jade = require("jade");
-	var query = loaderUtils.parseQuery(this.query);
+    var jade = require("jade");
+    var options = loaderUtils.getOptions(this);
 
-	var dirname = Path.dirname(this.resourcePath);
-	var jadeOptions = _.defaults({
-		filename: this.resourcePath,
-		self: query.self,
-		pretty: query.pretty,
-	}, getLoaderConfig(this, query), {
-		externalRuntime: false
-	});
+    var jadeOptions = _.defaults(options, {
+        filename: this.resourcePath,
+        externalRuntime: false
+    });
 
-	var jadeLocals = _.assign(jadeOptions.locals, query);
+    var tmpl = jade.compileClientWithDependenciesTracked(source, jadeOptions);
 
-	var tmpl = jade.compileClientWithDependenciesTracked(source, jadeOptions);
+    tmpl.dependencies.forEach(function(dep) {
+        this.addDependency(dep);
+    }.bind(this));
 
-	tmpl.dependencies.forEach(function(dep) {
-		this.addDependency(dep);
-	}.bind(this));
+    var opts = this.options;
 
-	var opts = this.options;
+    var loaders = opts.module ? opts.module.loaders : opts.resolve.loaders;
 
-	var loaders = opts.module ? opts.module.loaders : opts.resolve.loaders;
+    var mopts = Object.keys(opts).reduce(function(acc, key) {
+        acc[key] = opts[key];
+        return acc;
+    }, {});
 
-	var mopts = Object.keys(opts).reduce(function(acc, key) {
-		acc[key] = opts[key];
-		return acc;
-	}, {});
+    mopts.recursive = true;
+    mopts.resolve = {
+        loaders: loaders,
+        extensions: opts.resolve.extensions,
+        modulesDirectories: (opts.resolve.modulesDirectories || []).concat(opts.resolve.fallback || [])
+    };
 
-	mopts.recursive = true;
-	mopts.resolve = {
-		loaders: loaders,
-		extensions: opts.resolve.extensions,
-		modulesDirectories: (opts.resolve.modulesDirectories || []).concat(opts.resolve.fallback || [])
-	};
+    var er = 'var jade = require(' + resolve('jade/runtime') + ');\nrequire = require(' + resolve('enhanced-require') + ')(module, require(' + resolve('./json2regexp') + ')(' +
+        JSON.stringify(mopts, toString) + '));\n';
 
-	var er = 'var jade = require(' + resolve('jade/runtime') + ');\nrequire = require(' + resolve('enhanced-require') + ')(module, require(' + resolve('./json2regexp') + ')(' +
-				JSON.stringify(mopts, toString) + '));\n';
+    var moduleBody = er + tmpl.body + '\n\nmodule.exports = template;\ntemplate.__require = require';
 
-	var moduleBody = er + tmpl.body + '\n\nmodule.exports = template;\ntemplate.__require = require';
+    var mod = this.exec(moduleBody, this.resource);
 
-	var mod = this.exec(moduleBody, this.resource);
+    var _require = mod.__require;
 
-	var _require = mod.__require;
+    for (var file in _require.contentCache) {
+        this.addDependency && this.addDependency(file);
+    }
 
-	for (var file in _require.contentCache) {
-		this.addDependency && this.addDependency(file);
-	}
-
-	return mod(jadeLocals);
-}
+    return mod(jadeOptions.locals);
+};
 
 function resolve(path) {
-	return JSON.stringify(require.resolve(path));
+    return JSON.stringify(require.resolve(path));
 }
 
 function toString(key, value) {
-	if (!(value instanceof RegExp)) return value;
-	return value.toString();
-}
-
-/**
- * Check the loader query and webpack config for loader options. If an option is defined in both places,
- * the loader query takes precedence.
- *
- * @param {Loader} loaderContext
- * @param {object} query
- * @returns {Object}
- */
-function getLoaderConfig(loaderContext, query) {
-	var configKey = query.config || 'jadeLoader';
-	var config = loaderContext.options[configKey] || {};
-
-	delete query.config;
-
-	return config;
+    if (!(value instanceof RegExp)) return value;
+    return value.toString();
 }
