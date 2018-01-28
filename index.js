@@ -17,6 +17,7 @@ module.exports = function(source) {
 		filename: this.resourcePath,
 		self: query.self,
 		pretty: query.pretty,
+		basedir: query.basedir,
 		locals: query,
 		compileDebug: true,
 		externalRuntime: false
